@@ -130,16 +130,19 @@ async def save_order(order: OrderData):
 
 class ProdcutData(BaseModel):
     name: str
-    category_id: int
+    category_id: int = Field(..., alias="categoryId")
     price: float
-    old_price: Optional[float] = None
-    main_image: str
+    old_price: Optional[float] = Field(None, alias="oldPrice")
+    main_image: str = Field(..., alias="mainImage")
     images: List[str]
-    descreption: Optional[str] = None
-    colores: Optional[List[str]] = None
-    size: Optional[List[str]] = None
+    descreption: Optional[str] = Field(None, alias="description")
+    colores: Optional[List[str]] = Field(None, alias="colors")
+    size: Optional[List[str]] = Field(None, alias="sizes")
     stock: int
     brand: Optional[str] = None
+
+    class Config:
+        allow_population_by_field_name = True
   
 
 
