@@ -208,22 +208,31 @@ class ProductUpdate(BaseModel):
     sizes: Optional[List[str]] = None
     stock: int
     brand: Optional[str] = None
-    categoryId: int  # ✅ أضف هذا السطر
+    categoryId: int
 
     class Config:
         extra = "ignore"
+
 @app.put("/update-product/{product_id}")
 async def update_product(product_id: int, product: ProductUpdate):
-    try:
-        response = supabase.table("product").update(product.dict(exclude_none=True, by_alias=True)).eq("id", product_id).execute()
-        
-        if not response.data:
-            raise HTTPException(status_code=404, detail="Product not found")
+    data = product.dict(exclude_none=True)
+    # هنا نعيد تسمية المفاتيح لتطابق أسماء الأعمدة في قاعدة البيانات
+    rename_map = {
+        "categoryId": "categories-id",
+        "oldPrice": "old-price",
+        "mainImage": "main-image",
+        "description": "descreption",
+        "colors": "colores",
+        "sizes": "size",
+    }
+    data_db = {rename_map.get(k, k): v for k, v in data.items()}
 
-        return {"message": "Product updated successfully", "updated_product": response.data}
-    
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error updating product: {str(e)}")
+    response = supabase.table("product").update(data_db).eq("id", product_id).execute()
+
+    if not response.data:
+        raise HTTPException(status_code=404, detail="Product not found")
+
+    return {"message": "Product updated successfully", "updated_product": response.data}
 
 
    
