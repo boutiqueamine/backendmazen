@@ -200,17 +200,18 @@ async def save_product(category: CategoryData):
 class ProductUpdate(BaseModel):
     name: str
     price: float
-    old_price: Optional[float] = Field(None, alias="old-price")  # ✅ Allow null + alias
-    main_image: str = Field(alias="main-image")
+    oldPrice: Optional[float] = None
+    mainImage: str
     images: List[str]
-    descreption: Optional[str] = None 
-    colores: Optional[List[str]] = None
-    size: Optional[List[str]] = None
+    description: Optional[str] = None
+    colors: Optional[List[str]] = None
+    sizes: Optional[List[str]] = None
     stock: int
     brand: Optional[str] = None
+    categoryId: int  # ✅ أضف هذا السطر
 
     class Config:
-        allow_population_by_field_name = True  # ✅ Allow client to use "old_price" or "old-
+        extra = "ignore"
 @app.put("/update-product/{product_id}")
 async def update_product(product_id: int, product: ProductUpdate):
     try:
