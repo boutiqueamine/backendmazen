@@ -418,23 +418,19 @@ async def delete_product(product_id: int):
 
 
 @app.delete("/delete_categoury/{categoury_id}")
-async def delete_product(categoury_id: int):
+async def delete_category(categoury_id: int):
     try:
-        # البحث عن المنتج والتأكد من وجوده
         response = supabase.from_("categories").select("id").eq("id", categoury_id).execute()
-        
-        # التحقق مما إذا كان المنتج موجودًا
-        if not response.data:
-            raise HTTPException(status_code=404, detail="Product not found")
-        
-        # حذف المنتج
+
+        if response.data is None or len(response.data) == 0:
+            raise HTTPException(status_code=404, detail="Category not found")
+
         delete_response = supabase.from_("categories").delete().eq("id", categoury_id).execute()
 
-        return {"message": "categoury deleted successfully", "categoury_id": categoury_id}
-    
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error deleting product: {str(e)}")
+        return {"message": "Category deleted successfully", "category_id": categoury_id}
 
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error deleting category: {str(e)}")
 
 
 
