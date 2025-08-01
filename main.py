@@ -191,6 +191,10 @@ class ProdcutData(BaseModel):
 @app.post("/save-product")
 async def save_product(product: ProdcutData):
     try:
+         facebook_link = product.main_image.replace(
+            "/c_fill,w_800,h_800,g_auto/",
+            "/c_pad,w_1200,h_628,b_white/"
+        )
         response = supabase.table('product').insert({
             'name': product.name,
             'categories-id': product.category_id,
@@ -202,7 +206,8 @@ async def save_product(product: ProdcutData):
             'colores': product.colores if product.colores else None,  # ✅ تحويل القائمة الفارغة إلى null
             'size': product.size if product.size else None,  # ✅ تحويل القائمة الفارغة إلى null
             'stock': product.stock,
-            'brand': product.brand if product.brand is not None else None
+            'brand': product.brand if product.brand is not None else None,
+            'facebook':facebook_link,
         }).execute()
 
         return response
