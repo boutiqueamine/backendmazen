@@ -52,6 +52,49 @@ def get_categories():
     return categories    
   
 
+
+
+
+
+@app.get("/product", response_model=dict)
+def get_product(id: int = Query(..., description="ID of the product")):
+    response = supabase.table("product").select("*").eq("id", id).execute()
+
+    if not response.data:
+        raise HTTPException(status_code=404, detail="Product not found")
+    
+    product_data = response.data[0]
+
+    # Get the category name
+    response2 = supabase.table("categories").select("*").eq("id", product_data['categories-id']).execute()
+    if response2.data:
+        categorie_name = response2.data[0]['name']
+    else:
+        categorie_name = None
+
+    product = {
+        "id": product_data['id'],
+        "name": product_data["name"],
+        "price": product_data['price'],
+        "oldprice": product_data['old-price'],
+        "main-image": product_data['main-image'],
+        "images": product_data['images'],
+        "categorie": categorie_name,
+        "descreption": product_data['descreption'],
+        "colores": product_data['colores'],
+        "size": product_data['size'],
+        "stock": product_data['stock'],
+        "brand": product_data['brand'],
+        "created_at": product_data['created_at'],
+    }
+
+    return product
+
+
+
+
+
+
 @app.get("/products", response_model=List[dict])
 def get_():
     response = supabase.table("product").select("*").execute()
