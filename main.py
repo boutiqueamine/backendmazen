@@ -185,36 +185,28 @@ class ProdcutData(BaseModel):
 
 
 
-  
-
-@app.post("/save-product")
-async def save_product(product: ProductData):
+  @app.post("/save-product")
+async def save_product(product: ProdcutData):
     try:
-        # Safe fallback in case the expected pattern isn't in the URL
-        facebook_link = product.main_image.replace(
-            "/c_fill,w_800,h_800,g_auto/",
-            "/c_pad,w_1200,h_628,b_white/"
-        ) if "/c_fill,w_800,h_800,g_auto/" in product.main_image else product.main_image
-
         response = supabase.table('product').insert({
             'name': product.name,
             'categories-id': product.category_id,
             'price': product.price,
             'old-price': product.old_price if product.old_price is not None else None,
             'main-image': product.main_image,
-            'images': product.images,
+            'images': product.images, 
             'descreption': product.descreption if product.descreption is not None else None,
-            'colores': product.colores if product.colores else None,
-            'size': product.size if product.size else None,
+            'colores': product.colores if product.colores else None,  # ✅ تحويل القائمة الفارغة إلى null
+            'size': product.size if product.size else None,  # ✅ تحويل القائمة الفارغة إلى null
             'stock': product.stock,
-            'brand': product.brand if product.brand is not None else None,
-            'facebook': facebook_link,
+            'brand': product.brand if product.brand is not None else None
         }).execute()
 
         return response
 
     except Exception as e:
-        return {"error": str(e)}
+        return {"error": str(e)} 
+
 
 
 
