@@ -1,5 +1,5 @@
 from supabase import create_client, Client
-from fastapi import FastAPI,BackgroundTasks, HTTPException
+from fastapi import FastAPI,BackgroundTasks,Query, HTTPException
 from typing import List,Optional
 from fastapi.middleware.cors import CORSMiddleware 
 from pydantic import BaseModel,Field
