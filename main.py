@@ -1,5 +1,5 @@
 from supabase import create_client, Client
-from fastapi import FastAPI,BackgroundTasks,Query, HTTPException
+from fastapi import FastAPI,BackgroundTasks, HTTPException
 from typing import List,Optional
 from fastapi.middleware.cors import CORSMiddleware 
 from pydantic import BaseModel,Field
@@ -54,10 +54,8 @@ def get_categories():
 
 
 
-
-
-@app.get("/product", response_model=dict)
-def get_product(id: int = Query(..., description="ID of the product")):
+@app.get("/product/{id}", response_model=dict)
+def get_product(id: int):
     response = supabase.table("product").select("*").eq("id", id).execute()
 
     if not response.data:
@@ -67,10 +65,7 @@ def get_product(id: int = Query(..., description="ID of the product")):
 
     # Get the category name
     response2 = supabase.table("categories").select("*").eq("id", product_data['categories-id']).execute()
-    if response2.data:
-        categorie_name = response2.data[0]['name']
-    else:
-        categorie_name = None
+    categorie_name = response2.data[0]['name'] if response2.data else None
 
     product = {
         "id": product_data['id'],
@@ -89,7 +84,6 @@ def get_product(id: int = Query(..., description="ID of the product")):
     }
 
     return product
-
 
 
 
