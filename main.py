@@ -184,8 +184,7 @@ class ProdcutData(BaseModel):
 
 
 
-
-  @app.post("/save-product")
+@app.post("/save-product")
 async def save_product(product: ProdcutData):
     try:
         response = supabase.table('product').insert({
