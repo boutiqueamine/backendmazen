@@ -81,6 +81,7 @@ def get_product(id: int):
         "stock": product_data['stock'],
         "brand": product_data['brand'],
         "created_at": product_data['created_at'],
+         "facebook":product_data["facebook"]
     }
 
     return product
